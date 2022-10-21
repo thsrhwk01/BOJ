@@ -9,7 +9,7 @@
 
 using namespace std;
 
-char board[3072][6144];
+char board[3072][6145];
 int n;
 
 void starlight(int x, int y) {
@@ -43,9 +43,9 @@ void solve() {
 }
 
 void output() {
-    ostream_iterator<char> os(cout, "");
+    //fstream cout("tmp.out");
     for (int i = 0; i < n; ++i) {
-        copy_n(board[i], n * 2, os);
+        cout << board[i];
         cout << endl;
     }
 }
