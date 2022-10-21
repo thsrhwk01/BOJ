@@ -5,23 +5,18 @@
 #include <bits/stdc++.h>
 
 #define endl '\n'
+#define fastio ios::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
 
 using namespace std;
 
-array<string, 3072> board;
-int n, cnt;
+array<array<char, 6144>, 3072> board;
+int n;
 
 void starlight(int x, int y) {
     board[y][x] = '*';
-    --x;
-    ++y;
-    board[y][x] = '*';
-    board[y][x + 2] = '*';
-    --x;
-    ++y;
-    for (int i = x; i < x + 5; ++i) {
-        board[y][i] = '*';
-    }
+    board[y+1][x-1] = '*';
+    board[y+1][x + 1] = '*';
+    fill_n(board[y+2].begin() + x - 2, 5, '*');
 }
 
 void triple(int len, int x, int y) {
@@ -38,13 +33,11 @@ void triple(int len, int x, int y) {
 
 void input() {
     cin >> n;
-    cnt = n / 3;
 }
 
 void solve() {
-    for (auto &str: board) {
-        str.resize(6145);
-        fill_n(str.begin(), 6144, ' ');
+    for (int i = 0; i < n; ++i) {
+        fill_n(board[i].begin(), n * 2, ' ');
     }
     triple(n, n - 1, 0);
 }
@@ -58,9 +51,7 @@ void output() {
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cout.tie(nullptr);
+    fastio
 
     input();
     solve();
