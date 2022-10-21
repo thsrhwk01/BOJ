@@ -9,14 +9,14 @@
 
 using namespace std;
 
-array<array<char, 6144>, 3072> board;
+char board[3072][6144];
 int n;
 
 void starlight(int x, int y) {
     board[y][x] = '*';
     board[y+1][x-1] = '*';
     board[y+1][x + 1] = '*';
-    fill_n(board[y+2].begin() + x - 2, 5, '*');
+    fill_n(board[y+2] + x - 2, 5, '*');
 }
 
 void triple(int len, int x, int y) {
@@ -37,7 +37,7 @@ void input() {
 
 void solve() {
     for (int i = 0; i < n; ++i) {
-        fill_n(board[i].begin(), n * 2, ' ');
+        fill_n(board[i], n * 2, ' ');
     }
     triple(n, n - 1, 0);
 }
@@ -45,7 +45,7 @@ void solve() {
 void output() {
     ostream_iterator<char> os(cout, "");
     for (int i = 0; i < n; ++i) {
-        copy_n(board[i].begin(), n * 2, os);
+        copy_n(board[i], n * 2, os);
         cout << endl;
     }
 }
