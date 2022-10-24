@@ -7,52 +7,60 @@
 using namespace std;
 
 #define endl '\n'
+#define pii pair<int, int>
 #define ll long long
+#define emb emplace_back
 #define fastio iostream::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
 
-map<int, int> for_sale;
-bool checker[20'000'001];
-
-vector<ll> highest;
+vector<pii> sale;
+vector<pair<int, ll>> results;
 
 int n, gap;
+
+bool cmp(pii rhs, pii lhs) {
+    swap(rhs.second, lhs.second);
+    return rhs < lhs;
+}
+
+bool is_unique(const pii &rhs, const pii &lhs) {
+    return rhs.first == lhs.first;
+}
 
 void input() {
     cin >> n >> gap;
 
-    int height, value;
-    while (n--) {
-        cin >> height >> value;
-        checker[height] = true;
-
-        for_sale[height] = max(for_sale[height], value);
-    }
+    sale.resize(n);
+    for (auto &input: sale) cin >> input.first >> input.second;
 }
 
 void solve() {
-    int range = for_sale.rbegin()->first - for_sale.begin()->first + 1;
-    highest.resize(range);
+    sort(sale.begin(), sale.end(), cmp);
+    sale.resize(unique(sale.begin(), sale.end(), is_unique) - sale.begin());
 
-    int lowest = for_sale.begin()->first;
+    results.resize(sale.size());
+    results[0] = sale[0];
 
-    highest[0] = for_sale[lowest];
+    int checker = 0;
 
-    for (int i = 1; i < range; ++i) {
-        highest[i] = highest[i-1];
-        if (i < gap) {
-            if (checker[i + lowest] && for_sale[i + lowest] > highest[i]) highest[i] = for_sale[i + lowest];
+    int height;
+    ll value;
+
+    for (int i = 1; i < sale.size(); ++i) {
+        tie(height, value) = sale[i];
+
+        results[i].first = height;
+        results[i].second = max(results[i-1].second, value);
+
+        if (height - results[checker].first >= gap) {
+            while (height - results[checker + 1].first >= gap) ++checker;
+
+            results[i].second = max(results[i].second, value + results[checker].second);
         }
-        else {
-            if (checker[i + lowest] && for_sale[i + lowest] + highest[i - gap] > highest[i])
-                highest[i] = for_sale[i + lowest] + highest[i - gap];
-        }
-
-        //cout << highest[i] << ' ';
     }
 }
 
 void output() {
-    cout << *highest.rbegin();
+    cout << results.rbegin()->second;
 }
 
 int main() {
