@@ -1,15 +1,12 @@
-#include <stdio.h>
+#include "bits/stdc++.h"
 
-int main(void) {
-	int a, b;
-	scanf("%d %d" , &a, &b);
+using namespace std;
 
-	if(a>b)
-		printf(">");
-	else if(a<b)
-		printf("<");
-	else
-		printf("==");
-
-	return 0;
+int main() {
+    int x, y;
+    cin >> x >> y;
+    
+    if (x > y) cout << '>';
+    else if (x == y) cout << "==";
+    else cout << '<';
 }
