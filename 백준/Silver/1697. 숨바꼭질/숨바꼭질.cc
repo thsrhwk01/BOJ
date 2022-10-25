@@ -1,3 +1,7 @@
+//
+// Created by woo-young Choi on 2022/08/27.
+//
+
 #include <iostream>
 #include <queue>
 
@@ -5,23 +9,32 @@ using namespace std;
 
 bool visited[100'001] = {false , };
 
-unsigned int finding(const int& start, const int& end) {
-    queue<pair<int, unsigned int>> q;
-    q.push({start, 0});
+int start, last;
+
+unsigned int finding() {
+    int time = 0;
+    queue<int> q, nq;
+    q.push(start);
+
     while (true) {
         auto now = q.front();
         q.pop();
 
-        visited[now.first] = true;
-        if (now.first == end) return now.second;
+        visited[now] = true;
+        if (now == last) return time;
 
-        if (now.first - 1 >= 0 && !visited[now.first - 1]) q.push({now.first - 1, now.second + 1});
-        if (now.first + 1 <= 100'000 && !visited[now.first + 1]) q.push({now.first + 1, now.second + 1});
-        if (now.first * 2 <= 100'000 && !visited[now.first * 2]) q.push({now.first * 2, now.second + 1});
+        if (now - 1 >= 0 && !visited[now - 1]) nq.push(now - 1);
+        if (now + 1 <= 100'000 && !visited[now + 1]) nq.push(now + 1);
+        if (now * 2 <= 100'000 && !visited[now * 2]) nq.push(now * 2);
+
+        if (q.empty()) {
+            swap(q, nq);
+            ++time;
+        }
     }
 }
 
 int main() {
-    int start, end; cin >> start >> end;
-    cout << finding(start, end);;
+    cin >> start >> last;
+    cout << finding();
 }
