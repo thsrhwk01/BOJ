@@ -1,31 +1,27 @@
 //
-// Created by ㅇㅇ on 2022-07-24.
+// Created by ㅇㅇ on 2022-07-26.
 //
 
 #include <iostream>
-#include <algorithm>
-
+#include <cmath>
 using namespace std;
 
 int main() {
-    int begin, end; cin >> begin >> end;
+    int min,max;
+    bool *prime;
+    cin >> min;
+    cin >> max;
+    prime = new bool[max+1];
+    fill_n(prime, max+1, 1);
+    prime[0] = false;
+    prime[1] = false;
 
-    bool result[1000001];
-    result[2] = true;
-    if (begin < 2) begin = 2;
+    for (int i = 2; i <= sqrt(max); i++)
+        if(prime[i])
+            for(int j = i*2; j <= max; j += i)
+                prime[j] = false;
 
-    for (int i = (begin % 2 ? begin : begin + 1) ; i <= end ; i+=2) {
-        bool is_prime = true;
-        for (int j = 3 ; j * j <= i ; j+=2)
-            if (i % j == 0) {
-                is_prime = false;
-                break;
-            }
-        if (is_prime)
-            result[i] = true;
-    }
-    
-    for (int i = begin ; i <= end ; i++)
-        if (result[i])
-            cout << i << '\n';
+    for (int i = min; i <= max; i++)
+        if(prime[i])
+            cout << i << "\n";
 }
