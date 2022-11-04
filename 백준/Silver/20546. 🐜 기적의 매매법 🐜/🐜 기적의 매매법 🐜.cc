@@ -30,32 +30,36 @@ void input() {
     for (auto &i: chart) cin >> i;
 }
 
-void solve() {
-    if (chart[0] <= xmoney) {
-        xstock += xmoney / chart[0];
-        xmoney %= chart[0];
+void update_x(int i) {
+    if (chart[i] <= xmoney) {
+        xstock += xmoney / chart[i];
+        xmoney %= chart[i];
     }
+}
 
+void update_y(int i) {
+    if (is_up != (chart[i] > chart[i - 1])) {
+        is_up = !is_up;
+        cnt = 1;
+    } else if (++cnt >= 3) {
+        if (is_up) {
+            ymoney += ystock * chart[i];
+            ystock = 0;
+        } else {
+            ystock += ymoney / chart[i];
+            ymoney %= chart[i];
+        }
+    }
+}
+
+void solve() {
+    update_x(0);
 
     for (int i = 1; i < 14; ++i) {
         if (chart[i] != chart[i - 1]) {
-            if (is_up != (chart[i] > chart[i - 1])) {
-                is_up = !is_up;
-                cnt = 1;
-            } else if (++cnt >= 3) {
-                if (is_up) {
-                    ymoney += ystock * chart[i];
-                    ystock = 0;
-                } else {
-                    ystock += ymoney / chart[i];
-                    ymoney %= chart[i];
-                }
-            }
+            update_y(i);
 
-            if (chart[i] <= xmoney) {
-                xstock += xmoney / chart[i];
-                xmoney %= chart[i];
-            }
+            update_x(i);
         }
     }
 
