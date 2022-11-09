@@ -1,86 +1,90 @@
-#include <iostream>
-#include <algorithm>
-#include <vector>
-#include <unordered_set>
-#include <queue>
+//
+// Created by woo-young Choi on 2022/11/09.
+//
+
+#include <bits/stdc++.h>
 
 using namespace std;
 
-unordered_set<int> knowstruth; // 진실을 아는 사람들
+#define endl '\n'
+#define pii pair<int, int>
+#define vii vector<pii>
+#define ll long long
 
-vector<unordered_set<int>> connection; // 그래프
+#define em emplace
+#define emb emplace_back
+#define range(x) x.begin(), x.end()
+#define fastio iostream::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
 
-vector<vector<int>> party; // 파티 정보
+vector<int> vec, knowing;
+vector<vector<int>> parties;
+int people, party, know, ans = 0;
 
-int n, m; // 사람 수, 파티 수
+int getParent(int x) {
+    return (vec[x] == x ? x : getParent(vec[x]));
+}
+
+bool isSameParent(int x, int y) {
+    return getParent(x) == getParent(y);
+}
+
+void unionParent(int x, int y) {
+    x = getParent(x);
+    y = getParent(y);
+
+    vec[max(x, y)] = min(x, y);
+}
 
 void input() {
-    cin >> n >> m;
+    cin >> people >> party;
 
-    connection.resize(n + 1); // 그래프 크기 설정
-    party.resize(m); // 파티 크기 설정
+    vec.resize(people + 1);
+    iota(range(vec), 0);
 
-    int nokhts; // number of knowing her true story
-    cin >> nokhts;
+    cin >> know;
+    knowing.resize(know);
+    for (auto &i: knowing) cin >> i;
 
-    int num;
-    while (nokhts--) {
-        cin >> num;
-        knowstruth.emplace(num);
-    }
+    parties.resize(party);
+    for (auto &p: parties) {
+        int n;
+        cin >> n;
+        p.resize(n);
 
-    for (auto &party_data: party) {
-        int invited_num;
-        cin >> invited_num;
-
-        party_data.resize(invited_num);
-
-        for (auto &member: party_data) {
-            cin >> member;
-        }
-
-        for (const auto &from: party_data) {
-            for (const auto &to: party_data) {
-                connection[from].emplace(to);
-            }
+        for (auto &i: p) {
+            cin >> i;
         }
     }
 }
 
 void solve() {
-    queue<int> q;
-
-    for (const auto &x: knowstruth) {
-        q.emplace(x);
-    }
-
-    int now;
-    while (!q.empty()) {
-        now = q.front();
-        q.pop();
-
-        for (const auto &x: connection[now]) {
-            if (knowstruth.find(x) != knowstruth.end()) continue;
-
-            knowstruth.emplace(x);
-            q.emplace(x);
+    for (const auto &p: parties) {
+        for (int i = 1; i < p.size(); ++i) {
+            unionParent(p[i - 1], p[i]);
         }
     }
 
-    int ans = 0;
-    for (const auto &party_data: party) {
-        if (all_of(party_data.begin(), party_data.end(), [=](int x) { return knowstruth.find(x) == knowstruth.end(); }))
-            ++ans;
-    }
+    for (auto &i: knowing) i = getParent(i);
 
+    for (const auto &p: parties) {
+        [&] {
+            for (const auto &i: p) {
+                if (find(range(knowing), getParent(i)) != knowing.end()) return;
+            }
+
+            ++ans;
+        }();
+    }
+}
+
+void output() {
     cout << ans;
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cout.tie(nullptr);
+    fastio
 
     input();
     solve();
+    output();
 }
