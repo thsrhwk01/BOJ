@@ -16,37 +16,45 @@ using ll = long long;
 #define all(x) x.begin(), x.end()
 #define fastio iostream::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
 
-int g, n;
+vector<int> v;
+int g, n, ans = 0;
 queue<int> q;
-set<int> s;
 
 void input() {
     cin >> g >> n;
 
     int tmp;
-    while(n--) {
+    while (n--) {
         cin >> tmp;
         q.em(tmp);
     }
 }
 
-void solve() {
-    for (int i = 1; i <= g; ++i) s.em(i);
+int union_find(int i) {
+    if (v[i] == i) return i;
 
-    while (!q.empty() && !s.empty()) {
-        auto mg = q.front();
+    return v[i] = union_find(v[i]);
+}
+
+void solve() {
+    v.resize(g + 1);
+    iota(all(v), 0);
+
+    while (!q.empty()) {
+        int plane = q.front();
         q.pop();
 
-        auto enable = s.upper_bound(mg);
+        plane = union_find(plane);
 
-        if (enable == s.begin()) return;
+        if (plane == 0) return;
 
-        s.erase(prev(enable));
+        v[union_find(plane)] = union_find(plane - 1);
+        ++ans;
     }
 }
 
 void output() {
-    cout << g - s.size();
+    cout << ans;
 }
 
 int main() {
