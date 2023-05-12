@@ -18,7 +18,7 @@ using vii = vector<pii>;
     cin.tie(nullptr);                                                          \
     cout.tie(nullptr);
 
-unsigned long long gameCount, weaponCount, weaponInfo[505][505], dp[505][505];
+ll gameCount, weaponCount, weaponInfo[505][505], dp[505][505];
 
 void input() {
     cin >> gameCount >> weaponCount;
@@ -33,7 +33,7 @@ void input() {
 void solve() {
     rep(gameNum, 1, gameCount) {
         rep(weaponNum, 1, weaponCount) {
-            unsigned long long temp = 0xffffffffffffffff;
+            ll temp = 0x3f3f3f3f3f3f3f3f;
 
             rep(i, 1, weaponCount) {
                 if (i == weaponNum) continue;
