@@ -18,7 +18,7 @@ using vii = vector<pii>;
     cin.tie(nullptr);                                                          \
     cout.tie(nullptr);
 
-bool board[7000][7000];
+bool board[2'200][2'200];
 
 int n;
 
