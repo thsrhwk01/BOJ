@@ -20,7 +20,7 @@ using vii = vector<pii>;
 
 int n, m, ans;
 
-char board[20][20];
+string board[20];
 
 // up down left right
 pii dirs[4] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
@@ -30,13 +30,13 @@ bool isVisited[26];
 void input() {
     cin >> n >> m;
 
-    rep(i, 0, n - 1) rep(j, 0, m - 1) cin >> board[i][j];
+    rep(i, 0, n - 1) cin >> board[i];
 }
 
 inline bool isOut(int y, int x) { return (y < 0 || y >= n || x < 0 || x >= m); }
 
 void dfs(int y, int x, int cnt) {
-    auto nowChar = board[y][x];
+    char nowChar = board[y][x];
 
     if (isVisited[nowChar - 'A']) {
         ans = max(ans, cnt);
