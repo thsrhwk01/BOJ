@@ -38,17 +38,14 @@ inline bool isOut(int y, int x) { return (y < 0 || y >= n || x < 0 || x >= m); }
 void dfs(int y, int x, int cnt) {
     char nowChar = board[y][x];
 
-    if (isVisited[nowChar - 'A']) {
-        ans = max(ans, cnt);
-        return;
-    }
+    ans = max(ans, cnt);
 
     isVisited[nowChar - 'A'] = true;
 
     rep(i, 0, 3) {
         int ny = y + dirs[i].first, nx = x + dirs[i].second;
 
-        if (isOut(ny, nx))
+        if (isOut(ny, nx) || isVisited[board[ny][nx] - 'A'])
             continue;
 
         dfs(ny, nx, cnt + 1);
@@ -57,7 +54,7 @@ void dfs(int y, int x, int cnt) {
     isVisited[nowChar - 'A'] = false;
 }
 
-void solve() { dfs(0, 0, 0); }
+void solve() { dfs(0, 0, 1); }
 
 void output() { cout << ans; }
 
