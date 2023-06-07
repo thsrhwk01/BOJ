@@ -1,53 +1,87 @@
-//
-// Created by 99woo on 2022-08-06.
-//
-
-#include <iostream>
-#include <unordered_map>
-#include <vector>
-#include <queue>
-#include <algorithm>
+#include <bits/stdc++.h>
 
 using namespace std;
 
-template <typename T>
-struct cmp {
-    bool operator() (const T& rhs, const T& lhs) { return rhs.second > lhs.second; }
-};
+using ll  = long long;
+using vi  = vector<int>;
+using vvi = vector<vi>;
+using pii = pair<int, int>;
+using vii = vector<pii>;
 
-int main() {
-    ios::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
-    int n, e, start; cin >> n >> e >> start;
+#define endl '\n'
+#define em emplace
+#define emb emplace_back
+#define all(x) x.begin(), x.end()
+#define rep(i, from, to) for (int i = from; i <= to; ++i)
+#define fastio                                                                 \
+    iostream::sync_with_stdio(false);                                          \
+    cin.tie(nullptr);                                                          \
+    cout.tie(nullptr);                                                         \
 
-    vector<vector<pair<int, int>>> nodes(n+1);
 
-    while (e--) {
-        int beg, end, val; cin >> beg >> end >> val;
-        nodes[beg].emplace_back(end, val);
-    }
+// Dijkstra Algorithm
+const int INF = 0x7f7f7f7f;
 
-    unordered_map<int, int> result;
+int nodeNumber, edgeNumber, startNode, result[20001];
 
-    priority_queue<pair<int, int>, vector<pair<int, int>>, cmp<pair<int, int>>> q;
-    q.emplace(start, 0);
+vii edges[20001];
 
-    while (!q.empty()) {
-        const auto curr = q.top();
-        q.pop();
+// Dijkstra function
+void dijkstra() {
+    // Initialize result with infinite
+    memset(result, INF, sizeof(result));
 
-        if (result.find(curr.first) != result.end()) continue;
-        result[curr.first] = curr.second;
+    // {cost, to}
+    priority_queue<pii, vii, greater<>> pq;
+    pq.em(0, startNode);
+    
+    while (!pq.empty()) {
+        auto [costNow, nodeNow] = pq.top();
+        pq.pop();
 
-        for (const auto& it : nodes[curr.first]) {
-            q.emplace(it.first, curr.second + it.second);
+        if (result[nodeNow] != INF) continue;
+        result[nodeNow] = costNow;
+        
+        for (const auto &edge : edges[nodeNow]) {
+            auto [nextNode, nextCost] = edge;
+            nextCost += costNow;
+            
+            if(result[nextNode] != INF) continue;
+
+            pq.em(nextCost, nextNode);
         }
     }
+}
 
-    for (int i = 1 ; i < n + 1 ; ++i) {
-        if (result.find(i) == result.end()) {
-            cout << "INF\n";
-        } else {
-            cout << result[i] << '\n';
-        };
+void input() {
+    cin >> nodeNumber >> edgeNumber >> startNode;
+
+    int from, to, cost;
+
+    while (edgeNumber--) {
+        cin >> from >> to >> cost;
+
+        edges[from].emb(to, cost);
     }
+}
+
+void solve() {
+    dijkstra();
+}
+
+void output() {
+    rep(i, 1, nodeNumber) {
+        if (result[i] == INF) cout << "INF";
+        else cout << result[i];
+
+        cout << endl;
+    }
+}
+
+int main() {
+    fastio;
+
+    input();
+    solve();
+    output();
 }
