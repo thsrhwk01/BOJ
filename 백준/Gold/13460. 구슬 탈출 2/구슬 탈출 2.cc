@@ -25,10 +25,10 @@ int n, m;
 // down, up, left, right
 pii dirs[4] = {{1, 0}, {-1, 0}, {0, -1}, {0, 1}};
 
-struct status {
+struct state {
     int ry, rx, by, bx, step;
 
-    status(int ry, int rx, int by, int bx, int step)
+    state(int ry, int rx, int by, int bx, int step)
         : ry(ry), rx(rx), by(by), bx(bx), step(step) {}
 
     bool isRedFirst(int dir) {
@@ -48,72 +48,63 @@ struct status {
         }
     }
 
-    pii moveRed(int dir) {
-        int y = ry, x = rx;
-
+    void moveRed(int dir) {
         while (true) {
-            int ny = y + dirs[dir].first, nx = x + dirs[dir].second;
+            int ny = ry + dirs[dir].first, nx = rx + dirs[dir].second;
 
-            if ((board[y][x] == 'O') ||
+            if ((board[ry][rx] == 'O') ||
                 (board[ny][nx] == 'B' || board[ny][nx] == '#'))
                 break;
 
-            y = ny;
-            x = nx;
+            ry = ny;
+            rx = nx;
         }
 
-        if (board[y][x] == '.')
-            board[y][x] = 'R';
-
-        return {y, x};
+        if (board[ry][rx] == '.')
+            board[ry][rx] = 'R';
     }
 
-    pii moveBlue(int dir) {
-        int y = by, x = bx;
-
+    void moveBlue(int dir) {
         while (true) {
-            int ny = y + dirs[dir].first, nx = x + dirs[dir].second;
+            int ny = by + dirs[dir].first, nx = bx + dirs[dir].second;
 
-            if ((board[y][x] == 'O') ||
+            if ((board[by][bx] == 'O') ||
                 (board[ny][nx] == 'R' || board[ny][nx] == '#'))
                 break;
 
-            y = ny;
-            x = nx;
+            by = ny;
+            bx = nx;
         }
 
-        if (board[y][x] == '.')
-            board[y][x] = 'B';
-
-        return {y, x};
+        if (board[by][bx] == '.')
+            board[by][bx] = 'B';
     }
 
-    status move(int dir) {
-        pii afterRed, afterBlue;
+    void resetBoard() {
+        board[ry][rx] = boardOriginal[ry][rx];
+        board[by][bx] = boardOriginal[by][bx];
+    }
+
+    void move(int dir) {
+        ++step;
+
         if (isRedFirst(dir)) {
-            afterRed = moveRed(dir);
-            afterBlue = moveBlue(dir);
+            moveRed(dir);
+            moveBlue(dir);
         } else {
-            afterBlue = moveBlue(dir);
-            afterRed = moveRed(dir);
+            moveBlue(dir);
+            moveRed(dir);
         }
 
-        board[afterRed.first][afterRed.second] =
-            boardOriginal[afterRed.first][afterRed.second];
-
-        board[afterBlue.first][afterBlue.second] =
-            boardOriginal[afterBlue.first][afterBlue.second];
-
-        return status(afterRed.first, afterRed.second, afterBlue.first,
-                      afterBlue.second, step + 1);
+        resetBoard();
     }
 };
 
-bool isNotMoved(status &l, status &r) {
+bool isNotMoved(state &l, state &r) {
     return l.ry == r.ry && l.rx == r.rx && l.by == r.by && l.bx == r.bx;
 }
 
-status initStatus(0, 0, 0, 0, 0);
+state initStatus(0, 0, 0, 0, 0);
 
 void input() {
     cin >> n >> m;
@@ -146,29 +137,31 @@ void input() {
 void solve() {
     rep(i, 0, n - 1) rep(j, 0, m - 1) board[i][j] = boardOriginal[i][j];
 
-    queue<status> q;
+    queue<state> q;
     q.em(initStatus);
 
     while (!q.empty()) {
-        auto now = q.front();
+        auto nowState = q.front();
         q.pop();
 
         rep(i, 0, 3) {
-            auto afterMove = now.move(i);
+            auto nextState = nowState;
 
-            if (isNotMoved(now, afterMove))
+            nextState.move(i);
+
+            if (isNotMoved(nowState, nextState))
                 continue;
 
-            if (board[afterMove.by][afterMove.bx] == 'O')
+            if (board[nextState.by][nextState.bx] == 'O')
                 continue;
 
-            if (board[afterMove.ry][afterMove.rx] == 'O') {
-                cout << afterMove.step;
+            if (board[nextState.ry][nextState.rx] == 'O') {
+                cout << nextState.step;
                 return;
             }
 
-            if (afterMove.step != 10)
-                q.em(afterMove);
+            if (nextState.step != 10)
+                q.em(nextState);
         }
     }
 
