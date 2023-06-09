@@ -108,10 +108,6 @@ struct state {
     void visiting() { history.em(ry, rx, by, bx); }
 };
 
-inline bool isNotMoved(state &l, state &r) {
-    return l.ry == r.ry && l.rx == r.rx && l.by == r.by && l.bx == r.bx;
-}
-
 state initStatus(0, 0, 0, 0, 0);
 
 void input() {
