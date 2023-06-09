@@ -34,7 +34,7 @@ vector<tuple<int, int, int>> cctvList;
 
 vvi boardOriginal;
 
-int n, m, ans = 65;
+int n, m, ans = 65, zeroCntOrig = 0;
 
 void input() {
     cin >> n >> m;
@@ -46,7 +46,9 @@ void input() {
         rep(j, 0, m - 1) {
             cin >> boardOriginal[i][j];
 
-            if (boardOriginal[i][j] != 0 && boardOriginal[i][j] != 6)
+            if (boardOriginal[i][j] == 0)
+                ++zeroCntOrig;
+            else if (boardOriginal[i][j] != 6)
                 cctvList.emb(boardOriginal[i][j], i, j);
         }
     }
@@ -54,39 +56,36 @@ void input() {
 
 inline bool isOut(int y, int x) { return y < 0 || y >= n || x < 0 || x >= m; }
 
-void backtracking(int step, const vvi &board) {
+void backtracking(int step, int zeroCnt, const vvi &board) {
     if (step == cctvList.size()) {
-        int cnt = 0;
-        for (auto &r : board)
-            for (auto &b : r)
-                if (b == 0)
-                    ++cnt;
-
-        ans = min(ans, cnt);
+        ans = min(ans, zeroCnt);
         return;
     }
 
     const auto [cctv, y, x] = cctvList[step];
 
-    for (auto dirSet : cctvDir[cctv]) {
+    for (const auto &dirSet : cctvDir[cctv]) {
         vvi boardTmp = board;
+        int tCnt = zeroCnt;
 
-        for (auto dir : dirSet) {
+        for (const auto &dir : dirSet) {
             int ty = y, tx = x;
 
             while (!isOut(ty, tx) && boardTmp[ty][tx] != 6) {
-                if (boardTmp[ty][tx] == 0)
+                if (boardTmp[ty][tx] == 0) {
+                    tCnt--;
                     boardTmp[ty][tx] = 7;
+                }
                 ty += dy[dir];
                 tx += dx[dir];
             }
         }
 
-        backtracking(step + 1, boardTmp);
+        backtracking(step + 1, tCnt, boardTmp);
     }
 }
 
-void solve() { backtracking(0, boardOriginal); }
+void solve() { backtracking(0, zeroCntOrig, boardOriginal); }
 
 void output() { cout << ans; }
 
