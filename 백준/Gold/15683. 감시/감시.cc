@@ -32,17 +32,14 @@ vvi cctvDir[6] = {{{}},
 // cctv, y, x
 vector<tuple<int, int, int>> cctvList;
 
-vvi boardOriginal;
+array<array<int, 8>, 8> boardOriginal;
 
 int n, m, ans = 65, zeroCntOrig = 0;
 
 void input() {
     cin >> n >> m;
-    boardOriginal.resize(n);
 
     rep(i, 0, n - 1) {
-        boardOriginal[i].resize(m);
-
         rep(j, 0, m - 1) {
             cin >> boardOriginal[i][j];
 
@@ -56,7 +53,7 @@ void input() {
 
 inline bool isOut(int y, int x) { return y < 0 || y >= n || x < 0 || x >= m; }
 
-void backtracking(int step, int zeroCnt, const vvi &board) {
+void backtracking(int step, int zeroCnt, const array<array<int, 8>, 8> &board) {
     if (step == cctvList.size()) {
         ans = min(ans, zeroCnt);
         return;
@@ -65,7 +62,7 @@ void backtracking(int step, int zeroCnt, const vvi &board) {
     const auto [cctv, y, x] = cctvList[step];
 
     for (const auto &dirSet : cctvDir[cctv]) {
-        vvi boardTmp = board;
+        auto boardTmp = board;
         int tCnt = zeroCnt;
 
         for (const auto &dir : dirSet) {
