@@ -58,7 +58,7 @@ void bfs(int startNode) {
             if (nodeData[i] == -1) {
                 nodeData[i] = nextData;
                 q.em(i);
-            } else if (nodeData[i] != nextData) {
+            } else if (nodeData[i] == nodeData[now]) {
                 cout << "NO" << endl;
                 stop = true;
                 return;
