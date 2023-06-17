@@ -18,25 +18,25 @@ using vii = vector<pii>;
     cin.tie(nullptr);                                                          \
     cout.tie(nullptr);
 
-ll n, INF = 0x3f3f3f3f3f3f3f3fLL;
+int n, INF = 2'100'000'000;
 
-array<ll, 1'000'005> arr, lis, lisTracker, finder, finderIdx;
+array<int, 1'000'005> arr, lis, lisTracker, finder, finderIdx;
 
-vector<ll> ans;
+vector<int> ans;
 
 void input() {
     cin >> n;
 
     rep(i, 1, n) {
         cin >> arr[i];
-        arr[i] += 1'000'000'001;
+        //arr[i] += 1'000'000'001;
     }
 }
 
 void solve() {
     fill(all(finder), INF);
 
-    finder[0] = 0;
+    finder[0] = -1'000'000'100;
 
     rep(i, 1, n) {
         auto it = lower_bound(all(finder), arr[i]);
@@ -63,7 +63,7 @@ void solve() {
 
 void output() {
     cout << ans.size() << endl;
-    for (auto &i: ans) cout << i - 1'000'000'001 << ' ';
+    for (auto &i: ans) cout << i << ' ';
 }
 
 int main() {
