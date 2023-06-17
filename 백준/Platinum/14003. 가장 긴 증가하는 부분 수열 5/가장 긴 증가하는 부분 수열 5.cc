@@ -18,44 +18,41 @@ using vii = vector<pii>;
     cin.tie(nullptr);                                                          \
     cout.tie(nullptr);
 
-int n, INF = 2'100'000'000;
+int n, INF = 0x3f3f3f3f;
 
-array<int, 1'000'005> arr, lis, lisTracker, finder, finderIdx;
+array<int, 1'000'005> arr, lis;
 
-vector<int> ans;
+vi finder, ans;
 
 void input() {
     cin >> n;
 
-    rep(i, 1, n) {
-        cin >> arr[i];
-        //arr[i] += 1'000'000'001;
-    }
+    rep(i, 1, n) { cin >> arr[i]; }
 }
 
 void solve() {
     fill(all(finder), INF);
 
-    finder[0] = -1'000'000'100;
+    finder.emb(-1'000'000'100);
 
     rep(i, 1, n) {
         auto it = lower_bound(all(finder), arr[i]);
-        int j = it - finder.begin();
 
-        lis[i] = j;
-        lisTracker[i] = finderIdx[j - 1];
+        lis[i] = it - finder.begin();
 
-        // finder 갱신
-        if (*it > arr[i]) {
-            *it = arr[i];
-            finderIdx[j] = i;
-        }
+        if (it == finder.end())
+            finder.emb(arr[i]);
+        else
+            *it = min(*it, arr[i]);
     }
 
-    auto i = max_element(all(lis)) - lis.begin();
-    while (i > 0) {
-        ans.emb(arr[i]);
-        i = lisTracker[i];
+    int cnt = *max_element(all(lis));
+
+    for(int i = n; i > 0; --i) {
+        if (lis[i] == cnt) {
+            --cnt;
+            ans.emb(arr[i]);
+        }
     }
 
     reverse(all(ans));
@@ -63,7 +60,8 @@ void solve() {
 
 void output() {
     cout << ans.size() << endl;
-    for (auto &i: ans) cout << i << ' ';
+    for (auto &i : ans)
+        cout << i << ' ';
 }
 
 int main() {
