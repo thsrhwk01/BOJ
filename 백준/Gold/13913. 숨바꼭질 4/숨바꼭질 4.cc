@@ -27,41 +27,37 @@ void input() { cin >> from >> to; }
 void solve() {
     memset(fromTrack, -1, sizeof(fromTrack));
 
-    queue<int> q, nq;
+    queue<int> q;
 
     q.em(from);
 
-    while (true) {
-        while (!q.empty()) {
-            int now = q.front();
-            q.pop();
+    while (!q.empty()) {
+        int now = q.front();
+        q.pop();
 
-            if (now == to)
-                return;
+        if (now == to)
+            return;
 
-            int tmp = now - 1;
+        int tmp = now - 1;
 
-            if (!isOut(tmp) && fromTrack[tmp] == -1) {
-                fromTrack[tmp] = now;
-                nq.em(tmp);
-            }
-
-            tmp = now + 1;
-
-            if (!isOut(tmp) && fromTrack[tmp] == -1) {
-                fromTrack[tmp] = now;
-                nq.em(tmp);
-            }
-
-            tmp = now * 2;
-
-            if (!isOut(tmp) && fromTrack[tmp] == -1) {
-                fromTrack[tmp] = now;
-                nq.em(tmp);
-            }
+        if (!isOut(tmp) && fromTrack[tmp] == -1) {
+            fromTrack[tmp] = now;
+            q.em(tmp);
         }
 
-        swap(q, nq);
+        tmp = now + 1;
+
+        if (!isOut(tmp) && fromTrack[tmp] == -1) {
+            fromTrack[tmp] = now;
+            q.em(tmp);
+        }
+
+        tmp = now * 2;
+
+        if (!isOut(tmp) && fromTrack[tmp] == -1) {
+            fromTrack[tmp] = now;
+            q.em(tmp);
+        }
     }
 }
 
@@ -70,7 +66,6 @@ void output() {
 
     while (true) {
         history.emb(to);
-
         if (to == from)
             break;
 
@@ -80,7 +75,8 @@ void output() {
     reverse(all(history));
 
     cout << history.size() - 1 << endl;
-    for (auto &i: history) cout << i << ' ';
+    for (auto &i : history)
+        cout << i << ' ';
 }
 
 int main() {
