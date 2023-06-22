@@ -22,7 +22,7 @@ int n, m, sec;
 
 bool possible;
 
-char board[1000][1000];
+string board[1000];
 
 array<array<bool, 1000>, 1000> isVisited;
 
@@ -42,9 +42,9 @@ void input() {
     personQ = queue<pii>();
 
     rep(i, 0, n - 1) {
-        rep(j, 0, m - 1) {
-            cin >> board[i][j];
+        cin >> board[i];
 
+        rep(j, 0, m - 1) {
             switch (board[i][j]) {
             case '*':
                 fireQ.em(i, j);
