@@ -18,17 +18,14 @@ using vii = vector<pii>;
     cin.tie(nullptr);                                                          \
     cout.tie(nullptr);
 
-int n;
-
 int main() {
     fastio;
-
+    
+    int n, num;
     cin >> n;
 
     priority_queue<int> leftQ;
     priority_queue<int, vi, greater<>> rightQ;
-
-    int num;
 
     while (n--) {
         cin >> num;
