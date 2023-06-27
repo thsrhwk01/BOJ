@@ -18,26 +18,29 @@ using vii = vector<pii>;
     cin.tie(nullptr);                                                          \
     cout.tie(nullptr);
 
-int dp[500'001];
 int n, m, ans;
 
 void input() { cin >> n >> m; }
 
 void solve() {
-    dp[0] = 1;
-    dp[1] = 1;
+    ans = 2;
+    int a = 1, b = 1;
 
-    rep(i, 2, 500'000) {
-        dp[i] = (dp[i - 2] + dp[i - 1]) % m;
+    while (true) {
+        ++ans;
+        int c = (a + b) % m;
 
-        if (dp[i] == 0 and dp[i - 1] == 1) {
-            ans = i + 1;
+        if (c == 0 and b == 1)
             return;
-        }
+
+        a = b;
+        b = c;
     }
 }
 
-void output() { cout << n << ' ' << ans << endl; }
+void output() {
+    cout << n << ' ' << ans << endl;
+}
 
 int main() {
     fastio;
