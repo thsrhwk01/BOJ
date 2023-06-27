@@ -18,7 +18,9 @@ using vii = vector<pii>;
     cin.tie(nullptr);                                                          \
     cout.tie(nullptr);
 
-ll fibonacci[1'500'050], n;
+int fibonacci[1'500'050];
+
+ll n;
 
 void input() { cin >> n; }
 
