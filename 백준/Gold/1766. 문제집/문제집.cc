@@ -19,8 +19,8 @@ using vii = vector<pii>;
     cout.tie(nullptr);
 
 // 위상 정렬?
-set<int> required[32'001];
 vi childs[32'001];
+int required[32'001];
 
 int n, m;
 
@@ -31,7 +31,7 @@ void input() {
     while (m--) {
         cin >> easy >> hard;
 
-        required[hard].em(easy);
+        ++required[hard];
         childs[easy].emb(hard);
     }
 }
@@ -40,7 +40,7 @@ void solve() {
     priority_queue<int, vi, greater<>> pq;
 
     rep(i, 1, n) {
-        if (required[i].empty())
+        if (required[i] == 0)
             pq.em(i);
     }
 
@@ -51,9 +51,9 @@ void solve() {
         cout << now << ' ';
 
         for (auto &child : childs[now]) {
-            required[child].erase(now);
-            
-            if (required[child].empty())
+            --required[child];
+
+            if (required[child] == 0)
                 pq.em(child);
         }
     }
