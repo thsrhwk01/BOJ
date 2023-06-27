@@ -18,44 +18,42 @@ using vii = vector<pii>;
     cin.tie(nullptr);                                                          \
     cout.tie(nullptr);
 
-// {value, weight}
-priority_queue<pii> pq;
-multiset<int> bags;
+int n, m;
 
 ll ans;
 
+// {weight, value}
+vii jewels;
+vi bags;
+
 void input() {
-    int n, m;
     cin >> n >> m;
 
-    int weight, value;
-    while (n--) {
-        cin >> weight >> value;
+    jewels.resize(n);
+    for (auto &p : jewels)
+        cin >> p.first >> p.second;
 
-        pq.em(value, weight);
-    }
-
-    bags.em(-1);
-    int limit;
-    while (m--) {
-        cin >> limit;
-
-        bags.em(limit);
-    }
+    bags.resize(m);
+    for (auto &b : bags)
+        cin >> b;
 }
 
 void solve() {
-    while (!pq.empty()) {
-        auto [value, weight] = pq.top();
-        pq.pop();
+    sort(all(jewels));
+    sort(all(bags));
 
-        auto it = bags.lower_bound(weight);
+    int jewelIdx = 0;
 
-        if (it == bags.end())
-            continue;
-        bags.erase(it);
+    priority_queue<int> pq;
 
-        ans += value;
+    for (const auto &b : bags) {
+        while (jewelIdx < n and jewels[jewelIdx].first <= b)
+            pq.em(jewels[jewelIdx++].second);
+
+        if (!pq.empty()) {
+            ans += pq.top();
+            pq.pop();
+        }
     }
 }
 
