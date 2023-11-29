@@ -18,97 +18,83 @@ using vii = vector<pii>;
     cin.tie(nullptr);                                                          \
     cout.tie(nullptr);
 
+struct Pillar {
+    int x = 0, y = 0, range = 0;
+    bool isSmell = false;
+};
+
+vector<Pillar> pillars(3'005);
+bool isVisited[3'005];
+int shiruRange, n, m;
+
 inline int getDist(int x1, int y1, int x2, int y2) {
-    return (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
+    return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
+}
+
+void dfs(int pillarNumber) {
+    auto &aPillar = pillars[pillarNumber];
+    int x1 = aPillar.x, y1 = aPillar.y;
+
+    rep(i, 1, n) {
+        if (isVisited[i] or i == pillarNumber) {
+            continue;
+        }
+
+        auto &bPillar = pillars[i];
+        int x2 = bPillar.x, y2 = bPillar.y;
+
+        if (getDist(x1, y1, x2, y2) <= shiruRange) {
+            isVisited[i] = true;
+            dfs(i);
+        }
+    }
 }
 
 int main() {
     fastio;
 
-    int n, m;
     cin >> n >> m;
 
-    vii coors;
-    coors.emb(0, 0);
-    rep(i, 1, n) {
-        int x, y;
-        cin >> x >> y;
+    rep(i, 1, n) { cin >> pillars[i].x >> pillars[i].y; }
 
-        coors.emb(x, y);
-    }
+    vi markedNumber;
+    markedNumber.emb(0);
 
-    vi pillars;
-    pillars.emb(0);
     rep(i, 1, m) {
-        int pillar;
-        cin >> pillar;
-
-        pillars.emb(pillar);
+        int tmp;
+        cin >> tmp;
+        markedNumber.emb(tmp);
     }
 
-    vi ranges(3'005);
-    fill(all(ranges), 0);
-    rep(i, 0, m) {
-        int range;
-        cin >> range;
+    cin >> shiruRange;
+    shiruRange *= shiruRange;
 
-        range = range * range;
+    rep(i, 1, m) {
+        int tmp;
+        cin >> tmp;
 
-        ranges[pillars[i]] = max(ranges[pillars[i]], range);
+        pillars[markedNumber[i]].range =
+            max(pillars[markedNumber[i]].range, tmp * tmp);
     }
 
-    bool isAble[3'005];
-    memset(isAble, true, sizeof(isAble));
-    vi edges[3'005];
+    rep(i, 1, m) {
+        auto &aPillar = pillars[markedNumber[i]];
+        int x1 = aPillar.x, y1 = aPillar.y, range = aPillar.range;
 
-    rep(i, 1, n) {
-        int range = ranges[i];
-        auto [x1, y1] = coors[i];
+        rep(i, 1, n) {
+            auto &bPillar = pillars[i];
+            int x2 = bPillar.x, y2 = bPillar.y;
 
-        if (range > 0) {
-            isAble[i] = false;
-        }
-
-        rep(j, 1, n) {
-            if (i == j) {
-                continue;
-            }
-
-            auto [x2, y2] = coors[j];
-            int dist = getDist(x1, y1, x2, y2);
-
-            if (dist <= ranges[0]) {
-                edges[i].emb(j);
-            }
-
-            if (range > 0 and dist <= range) {
-                isAble[j] = false;
+            if (getDist(x1, y1, x2, y2) <= range) {
+                bPillar.isSmell = true;
             }
         }
     }
 
-    bool isVisited[3'005];
-    memset(isVisited, false, sizeof(isVisited));
-    queue<int> q;
-
     rep(i, 1, n) {
-        if (isAble[i]) {
-            q.em(i);
+        if (!isVisited[i] and !pillars[i].isSmell) {
             isVisited[i] = true;
-        }
-    }
-
-    while (!q.empty()) {
-        auto now = q.front();
-        q.pop();
-
-        for (const auto &edge : edges[now]) {
-            if (isVisited[edge]) {
-                continue;
-            }
-
-            isVisited[edge] = true;
-            q.em(edge);
+            dfs(i);
         }
     }
 
