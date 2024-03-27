@@ -29,7 +29,6 @@ int main() {
     vector<ll> budgets(n);
 
     for (auto &budget : budgets) cin >> budget;
-    sort(all(budgets));
 
     cin >> totalBudget;
 
