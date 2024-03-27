@@ -15,48 +15,48 @@ using viii = vector<tiii>;
 #define emb emplace_back
 #define all(x) x.begin(), x.end()
 #define rep(i, from, to) for (int i = from; i <= to; ++i)
-#define fastio                        \
-    iostream::sync_with_stdio(false); \
-    cin.tie(nullptr);                 \
-    cout.tie(nullptr);
 
 int main() {
-    fastio;
+    iostream::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
 
     int n;
     cin >> n;
 
     vector<ll> arr(n);
-    map<ll, int> mp;
     for (auto &i : arr) {
         cin >> i;
-        mp[i]++;
     }
+    sort(all(arr));
 
     int ans = 0;
 
     for (int i = 0; i < n; ++i) {
-        mp[arr[i]]--;
-        for (int j = 0; j < n; ++j) {
-            if (i == j) continue;
-            mp[arr[j]]--;
+        auto checker = arr[i];
+        int l = 0, r = n - 1;
 
-            auto finding = arr[i] - arr[j];
-            bool found = false;
+        bool isAble = false;
+        while (l < r) {
+            auto sum = arr[l] + arr[r];
 
-            if (mp.contains(finding) and mp[finding] > 0) {
-                found = true;
-            }
-
-            mp[arr[j]]++;
-
-            if (found) {
-                ++ans;
+            if (l == i) {
+                ++l;
+            } else if (r == i) {
+                --r;
+            } else if (sum == checker) {
+                isAble = true;
                 break;
+            } else if (sum > checker) {
+                --r;
+            } else {
+                ++l;
             }
         }
 
-        mp[arr[i]]++;
+        if (isAble) {
+            ++ans;
+        }
     }
 
     cout << ans;
