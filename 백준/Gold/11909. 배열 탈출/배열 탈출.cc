@@ -1,12 +1,11 @@
-#include <functional>
 #include <iostream>
-#include <queue>
-#include <tuple>
 #include <vector>
 
 using namespace std;
 
 #define endl '\n'
+
+const long long INF = 0x7f7f7f7f7f7f7f7f;
 
 int main() {
     ios_base::sync_with_stdio(false);
@@ -16,7 +15,8 @@ int main() {
     int n;
     cin >> n;
 
-    vector<vector<int>> board(n, vector<int>(n));
+    vector<vector<long long>> board(n, vector<long long>(n)),
+        dp(n, vector<long long>(n));
 
     for (auto &&row : board) {
         for (auto &&cell : row) {
@@ -24,46 +24,34 @@ int main() {
         }
     }
 
-    priority_queue<tuple<long long, int, int>,
-                   vector<tuple<long long, int, int>>, greater<>>
-        pq;
+    auto isOut = [&](int x, int y) {
+        return x < 0 or y < 0 or x >= n or y >= n;
+    };
 
-    vector<vector<bool>> isVisited(n, vector<bool>(n));
+    int dx[] = {-1, 0};
+    int dy[] = {0, -1};
 
-    pq.emplace(0, 0, 0);
-
-    int dx[] = {0, 1};
-    int dy[] = {1, 0};
-
-    while (!pq.empty()) {
-        auto [cost, x, y] = pq.top();
-        pq.pop();
-
-        if (isVisited[x][y]) {
-            continue;
-        }
-        isVisited[x][y] = true;
-
-        if (x == n - 1 and y == n - 1) {
-            cout << cost;
-
-            break;
-        }
-
-        int weight = board[x][y];
-
-        for (int i = 0; i < 2; i++) {
-            int nx = x + dx[i], ny = y + dy[i];
-
-            if (nx >= n or ny >= n) {
+    for (int x = 0; x < n; x++) {
+        for (int y = 0; y < n; y++) {
+            if (x == 0 and y == 0) {
                 continue;
             }
 
-            int nWeight = board[nx][ny];
-            
-            pq.emplace(cost + (weight > nWeight ? 0 : nWeight - weight + 1), nx, ny);
+            dp[x][y] = INF;
+
+            for (int dir = 0; dir < 2; dir++) {
+                int bx = x + dx[dir], by = y + dy[dir];
+
+                if (isOut(bx, by)) {
+                    continue;
+                }
+
+                dp[x][y] = min(dp[x][y], dp[bx][by] + (board[bx][by] > board[x][y] ? 0 : board[x][y] - board[bx][by] + 1));
+            }
         }
     }
+
+    cout << dp[n - 1][n - 1];
 
     return 0;
 }
