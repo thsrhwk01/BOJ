@@ -1,6 +1,5 @@
 #include <algorithm>
 #include <iostream>
-#include <string>
 
 using namespace std;
 
@@ -40,30 +39,19 @@ int main() {
         return 0;
     }
 
-    string str1 = to_string(n);
-    long long i = 0;
-
-    for (int i = 1; i < 0x3f3f3f3f; i++) {
-        string prefix;
-        for (int j = 0; j < i; j++) {
-            prefix.append("0");
+    for (long long i = 1; i < 0x3f3f3f3f; i++) {
+        n *= 10;
+        long long limit = 1;
+        for (long long j = 0; j < i; j++) {
+            limit *= 10;
         }
 
-        for (long long j = 0; j < 0x3f3f3f3f; j++) {
-            string str2 = to_string(j);
+        for (long long j = 0; j < limit; j++) {
+            long long ans = n + j;
 
-            if (str2.size() > i) {
-                break;
-            }
-
-            if (str2.size() + prefix.size() > i) {
-                prefix.pop_back();
-            }
-
-            string ans = str1 + prefix + str2;
-
-            if (stoll(ans) % lcm == 0) {
+            if (ans % lcm == 0) {
                 cout << ans;
+
                 return 0;
             }
         }
