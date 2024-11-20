@@ -1,6 +1,6 @@
+#include <cmath>
 #include <iostream>
 #include <vector>
-#include <cmath>
 
 using namespace std;
 
@@ -30,8 +30,8 @@ int ccw(pll a, pll b, pll c) {
 }
 
 bool isCross(pll a, pll b, pll c, pll d) {
-    return (ccw(a, b, c) * ccw(a, b, d) < 0) and
-           (ccw(c, d, a) * ccw(c, d, b) < 0);
+    return (ccw(a, b, c) * ccw(a, b, d) <= 0) and
+           (ccw(c, d, a) * ccw(c, d, b) <= 0);
 }
 
 double getDist(pll a, pll b) {
@@ -41,53 +41,47 @@ double getDist(pll a, pll b) {
     return sqrt(res);
 }
 
-vector<int> visited;
+vector<pll> visited;
 
 void bt(double dist) {
     if (visited.size() == n) {
-        ans = min(ans, dist + getDist(points[visited.back()],
-                                      points[visited.front()]));
-
+        ans = min(ans, dist + getDist(visited.back(), visited.front()));
         return;
     }
 
     pll c;
     if (!visited.empty()) {
-        c = points[visited.back()];
+        c = visited.back();
     }
 
     for (int i = 0; i < points.size(); i++) {
-        if (find(visited.begin(), visited.end(), i) != visited.end()) {
-            continue;
+        pll d = points[i];
+        double tDist = dist;
+
+        for (const auto &p : visited) {
+            if (p == d) goto E;
         }
 
-        pll d = points[i];
-
-        bool crossed = false;
-        if (visited.size() > 3)
+        if (!visited.empty()) {
             for (int j = 1; j < visited.size() - 1; j++) {
-                pll a = points[j - 1], b = points[j];
+                pll a = visited[j - 1], b = visited[j];
 
                 if (isCross(a, b, c, d)) {
-                    crossed = true;
-                    continue;
+                    goto E;
                 }
             }
-
-        if (crossed) {
-            continue;
         }
 
-        visited.emplace_back(i);
+        visited.emplace_back(d);
 
-        double tDist = dist;
         if (visited.size() > 1) {
             tDist += getDist(c, d);
         }
-
         bt(tDist);
 
         visited.pop_back();
+
+    E: {}
     }
 }
 
@@ -107,9 +101,7 @@ int main() {
     bt(0);
 
     cout.precision(12);
-    cout << fixed;
-
-    cout << ans;
+    cout << fixed << ans;
 
     return 0;
 }
