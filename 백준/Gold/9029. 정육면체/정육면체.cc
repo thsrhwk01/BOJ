@@ -22,15 +22,15 @@ void dpCalc() {
                     now = 0x7f7f7f7f7f7f7f7f;
                 }
 
-                for (int h = 1; h < i; ++h) {
+                for (int h = 1; h <= i / 2; ++h) {
                     now = min(now, dp[i - h][j][k] + dp[h][j][k]);
                 }
 
-                for (int h = 1; h < j; ++h) {
+                for (int h = 1; h <= j / 2; ++h) {
                     now = min(now, dp[i][j - h][k] + dp[i][h][k]);
                 }
 
-                for (int h = 1; h < k; ++h) {
+                for (int h = 1; h <= k / 2; ++h) {
                     now = min(now, dp[i][j][k - h] + dp[i][j][h]);
                 }
             }
