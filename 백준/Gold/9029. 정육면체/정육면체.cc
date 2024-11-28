@@ -1,50 +1,45 @@
-#include <algorithm>
 #include <iostream>
-#include <queue>
+#include <algorithm>
 
 using namespace std;
 
 #define endl '\n'
 
-long long dp[205][205][205];
+int dp[201][201][201];
 
-void dpCalc() {
-    for (int i = 1; i < 201; ++i) {
-        for (int j = 1; j < 201; ++j) {
-            for (int k = 1; k < 201; ++k) {
-                auto &now = dp[i][j][k];
-
-                if (i == j and j == k) {
-                    now = 1;
-
-                    continue;
-                } else {
-                    now = 0x7f7f7f7f7f7f7f7f;
-                }
-
-                for (int h = 1; h <= i / 2; ++h) {
-                    now = min(now, dp[i - h][j][k] + dp[h][j][k]);
-                }
-
-                for (int h = 1; h <= j / 2; ++h) {
-                    now = min(now, dp[i][j - h][k] + dp[i][h][k]);
-                }
-
-                for (int h = 1; h <= k / 2; ++h) {
-                    now = min(now, dp[i][j][k - h] + dp[i][j][h]);
-                }
-            }
-        }
+int dpCalc(int a, int b, int c) {
+    if (a > b) {
+        swap(a, b);
     }
-}
 
-void solve() {
-    int w, l, h;
-    cin >> w >> l >> h;
+    if (b > c) {
+        swap(b, c);
+    }
 
-    cout << dp[w][l][h] << endl;
+    if (a > b) {
+        swap(a, b);
+    }
 
-    return;
+    auto &ret = dp[a][b][c];
+
+    if (ret > 0) return ret;
+    if (a == b and b == c) return ret = 1;
+
+    ret = 0x7f7f7f7f;
+
+    for (int i = 1; i <= a / 2; ++i) {
+        ret = min(ret, dpCalc(a - i, b, c) + dpCalc(i, b, c));
+    }
+
+    for (int i = 1; i <= b / 2; ++i) {
+        ret = min(ret, dpCalc(a, b - i, c) + dpCalc(a, i, c));
+    }
+
+    for (int i = 1; i <= c / 2; ++i) {
+        ret = min(ret, dpCalc(a, b, c - i) + dpCalc(a, b, i));
+    }
+
+    return ret;
 }
 
 int main() {
@@ -55,10 +50,11 @@ int main() {
     int t;
     cin >> t;
 
-    dpCalc();
-
     while (t--) {
-        solve();
+        int x, y, z;
+        cin >> x >> y >> z;
+
+        cout << dpCalc(x, y, z) << endl;
     }
 
     return 0;
