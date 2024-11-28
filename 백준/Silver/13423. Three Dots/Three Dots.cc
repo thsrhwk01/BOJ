@@ -21,20 +21,19 @@ void solve() {
     int ans = 0;
 
     for (int i = 0; i < n; i++) {
-        int x = vec[i];
-        for (int j = i + 1; j < n; j++) {
-            int y = vec[j];
+        int l = i - 1, r = i + 1, now = vec[i] * 2;
 
-            if ((x + y) & 1) {
-                continue;
-            }
+        while (l >= 0 and r < n) {
+            auto sum = vec[l] + vec[r];
 
-            int z = (x + y) / 2;
-
-            auto it = lower_bound(vec.begin(), vec.end(), z);
-
-            if (it != vec.end() and *it == z) {
+            if (sum == now) {
                 ++ans;
+                --l;
+                ++r;
+            } else if (sum > now) {
+                --l;
+            } else {
+                ++r;
             }
         }
     }
