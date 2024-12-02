@@ -1,5 +1,6 @@
+#include <algorithm>
 #include <iostream>
-#include <set>
+#include <vector>
 
 using namespace std;
 
@@ -10,20 +11,24 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n, k, ans = 0;
+    int n, k, ans = 0, cnt = 0;
     cin >> n >> k;
 
-    set<int> s;
+    vector<bool> vec(k);
 
     for (int i = 0; i < n; i++) {
         int tmp;
         cin >> tmp;
 
-        s.emplace(tmp);
+        if (!vec[tmp - 1]) {
+            vec[tmp - 1] = true;
+            ++cnt;
 
-        if (s.size() == k) {
-            ++ans;
-            s.clear();
+            if (cnt == k) {
+                ++ans;
+                cnt = 0;
+                vec.flip();
+            }
         }
     }
 
